@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package accommodation;
+
+import "google/protobuf/field_mask.proto";
+
+// Service defining property and user management for accommodation listings.
+service AccommodationService {
+  // A Host registers a new accommodation listing. Returns a unique property_id.
+  rpc AddProperty(AddPropertyRequest) returns (AddPropertyResponse);
+
+  // Client-side streaming: stream multiple User messages to create users in bulk.
+  // Server responds once with a summary confirmation when stream completes.
+  rpc CreateUsers(stream User) returns (CreateUsersResponse);
+
+  // A Host updates a property using its property_id. Partial updates supported
+  // via `update_mask` (google.protobuf.FieldMask).
+  rpc UpdateProperty(UpdatePropertyRequest) returns (UpdatePropertyResponse);
+}
+
+// --------------------
+// Enums
+// --------------------
+enum PropertyType {
+  PROPERTY_TYPE_UNSPECIFIED = 0;
+  APARTMENT = 1;
+  HOUSE = 2;
+  ROOM = 3;
+  OTHER = 4;
+}
+
+enum PropertyStatus {
+  STATUS_UNSPECIFIED = 0;
+  AVAILABLE = 1;
+  UNAVAILABLE = 2;
+  BOOKED = 3;
+}
+
+enum UserRole {
+  ROLE_UNSPECIFIED = 0;
+  HOST = 1;
+  GUEST = 2;
+}
+
+// --------------------
+// Messages: Properties
+// --------------------
+message Property {
+  string property_id = 1; // server-assigned unique id
+  string name = 2;
+  string location = 3;
+  PropertyType type = 4;
+  double price_per_night = 5;
+  PropertyStatus status = 6;
+  string host_id = 7; // id of the Host who owns this listing
+}
+
+message AddPropertyRequest {
+  string name = 1;
+  string location = 2;
+  PropertyType property_type = 3;
+  double price_per_night = 4;
+  PropertyStatus status = 5;
+  string host_id = 6;
+}
+
+message AddPropertyResponse {
+  string property_id = 1;
+}
+
+message UpdatePropertyRequest {
+  // property_id identifies the listing to update
+  string property_id = 1;
+
+  // The Property message contains the new values for fields that should be
+  // updated. Use `update_mask` to indicate which fields to apply.
+  Property property = 2;
+
+  // Partial update mask (e.g., "price_per_night,status").
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message UpdatePropertyResponse {
+  bool success = 1;
+  string message = 2;
+  // Optionally return the updated property snapshot.
+  Property property = 3;
+}
+
+// --------------------
+// Messages: Users (for client-side streaming)
+// --------------------
+message User {
+  string user_id = 1; // optional client-provided or server-assigned
+  string name = 2;
+  UserRole role = 3;
+  string email = 4;
+}
+
+message CreateUsersResponse {
+  int32 created_count = 1;
+  repeated string user_ids = 2;
+  string message = 3;
+}
