@@ -114,3 +114,37 @@ message CreateUsersResponse {
   string message = 3;
 }
 
+//Helm: the later in question 01:55 
+
+message RemovePropertyRequest {
+  string property_id = 1;
+  string host_id = 2;
+}
+
+message RemovePropertyResponse {
+  bool success = 1;
+  string message = 2;
+  repeated Property remaining_properties = 3;
+}
+
+//Helm: this is to whoever is next ik the numbers next to everything are cofusing but each number is a field success =1 message =2 remin.. =3 cuz theres 3 fields in it... this number has no meaning on direct values or amounts
+
+//Helm 2:37 list property
+
+message ListAvailableRequest {
+  string location =1;
+  double pric_max =2;
+  double pric_min =3; 
+  //ts is basicaly like making the looks in html that il have to code the js for later
+}
+
+message SearchPropertyRequest {
+  property_id =1;
+}
+
+message SearchPropertyResponse {
+  Property property =1;
+  bool found =2;
+  string status_mesg =3;
+
+}
