@@ -16,6 +16,17 @@ service AccommodationService {
   // A Host updates a property using its property_id. Partial updates supported
   // via `update_mask` (google.protobuf.FieldMask).
   rpc UpdateProperty(UpdatePropertyRequest) returns (UpdatePropertyResponse);
+
+
+  //Helm: this rpc this defines the service or like says the methods ig. im guessing inside it are data types or structures kinda like declaring in java that something is string then actualy doing something with it later..... yeah goodluck jason 
+  rpc RemoveProperty(RemovePropertyRequest) returns (RemovePropertyResponse);
+
+// ahh i get it now in brackets are request and response the 2 things we gonna use
+
+  rpc ListAvailableProperties(ListAvailableRequest) returns (stream Property);
+ 
+  rpc SearchProperty(SearchPropertyRequest) returns (SearchPropertyResponse);
+  
 }
 
 // --------------------
@@ -102,3 +113,4 @@ message CreateUsersResponse {
   repeated string user_ids = 2;
   string message = 3;
 }
+
